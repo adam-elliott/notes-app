@@ -111,6 +111,76 @@ sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     <script>
       (function () {
         
+        //var xhttp = new XMLHttpRequest();
+        //xhttp.open("GET", "weather.json", true);
+        //xhttp.onload = function() {
+        //  console.log(this.responseText);
+        //  //document.getElementById("weather").innerHTML = this.responseText;
+        //  let myObj = JSON.parse(this.responseText);
+        //  //console.log(myObj);
+        //  document.getElementById("weather").innerHTML = '<h1>' + myObj.currentWeather.temperature + '</h1>' + '<p>' + myObj.currentWeather.text + '</p>' + '<h2 style="text-transform:uppercase; font-size:12px;">' + myObj.currentWeather.location + '</h2>';
+        //}
+      
+        //xhttp.send()
+        
+        var noteCount = 3;
+        
+        function Note(noteText){
+          this.note = noteText;
+        }
+        
+        function addNote() {
+          noteCount++;
+          var newNote = document.createElement('div');
+          var newNoteHeader = document.createElement('div');
+          var newNoteBody = document.createElement('div');
+          var newNoteFooter = document.createElement('div');
+          var newNoteHeading = document.createElement('h5');
+          var newNoteText = document.createElement('p');
+          var newNoteHeadingContent = document.createTextNode("Stick Note " + noteCount + ".");
+          var newNoteContent = document.createTextNode("Type your note here...");
+          newNote.className = 'note';
+          newNoteHeader.className = 'note-header';
+          newNoteBody.className = 'note-body';
+          newNoteFooter.className = 'note-footer';
+          newNoteHeading.className = 'modal-title';
+          newNoteText.className = 'note-text';
+          newNoteText.setAttribute("contenteditable", "true");
+          newNoteText.appendChild(newNoteContent);
+          newNoteHeading.appendChild(newNoteHeadingContent);
+          newNoteHeader.appendChild(newNoteHeading);
+          newNoteBody.appendChild(newNoteText);
+          newNote.appendChild(newNoteHeader);
+          newNote.appendChild(newNoteBody);
+          newNote.appendChild(newNoteFooter);
+          newNoteText.addEventListener('blur', function(event) {saveNote(event);});
+          document.querySelector('div .container .row').appendChild(newNote);
+        }
+        
+        let addNoteBtn = document.querySelector(".btn-primary")
+        addNoteBtn.addEventListener("click", function() {addNote()});
+          
+        let noteText = document.querySelectorAll(".note-text");
+        for (let i=0; i < noteText.length; i++) {
+          noteText[i].addEventListener('blur', function(event) {saveNote(event)})}
+        
+        
+        function saveNote(event) {
+          let noteText = this.event.target.innerText;
+          console.log(noteText);
+          let oReq = new XMLHttpRequest();
+          oReq.open("POST", "api/notes");
+          oReq.setRequestHeader("Content-Type","application/json");
+          oReq.onload = function() {
+            // do stuff
+          }
+          let noteObject = {note: noteText};
+          let payload = JSON.stringify(noteObject);
+          oReq.send(payload);
+        }
+        
+        
+        
       })();
     </script>
   </body>
