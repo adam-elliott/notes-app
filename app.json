@@ -1,25 +1,9 @@
 {
-  "name": "node-js-rest",
-  "version": "1.0.0",
-  "description": "A simple sticky note app",
-  "main": "app.js",
-  "dependencies": {
-    "body-parser": "^1.17.2",
-    "express": "latest",
-    "mongodb": "^2.2.30"
-  },
-  "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "sticky",
-    "notes"
-  ],
-  "author": "Kilavagora",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/kilavagora/node-js-notes.git"
-  }
+  "name": "ae-notes-app",
+  "description": "A Node.js RESTful api and static file server app using Express 4 for making notes.",
+  "repository": "https://github.com/adam-elliott/notes-app",
+  "logo": 
+"https://rawgit.com/kilavagora/node-js-demo/master/static/JavaScript.svg",
+  "keywords": ["node", "express", "static"]
 }
+
