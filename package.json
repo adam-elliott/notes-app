@@ -4,9 +4,9 @@
   "description": "A simple sticky note app",
   "main": "app.js",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "latest",
-    "mongodb": "latest",
-    "body-parser": "latest"
+    "mongodb": "^2.2.30"
   },
   "scripts": {
     "start": "node app.js",

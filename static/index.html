@@ -18,13 +18,25 @@ rel="stylesheet"
 integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" 
 crossorigin="anonymous">
     <link href="main.css" rel="stylesheet">
+
+    <script src="https://use.fontawesome.com/6b79c34139.js"></script>
+    <style>
+      .close{position:absolute;top:15px;right:15px;}
+    </style>
   </head>
 
   <body>
     <div class="navbar navbar-inverse bg-inverse">
-      <div class="container d-flex justify-content-between">
+      <div class="container d-flex ">
+        
         <a href="#" class="navbar-brand">Sticky Notes</a>
+        <div class="navbar-right" style="position:absolute; right:0;">
+        <i  id="plusAdd" style="padding:10px; opacity:.6; color:white" class="fa fa-plus right" aria-hidden="true" class="fa fa-trash fa-1x"></i>
+      <i id="trash" style="padding:10px; opacity:.6; color:white" class="fa fa-trash fa-1x right" aria-hidden="true"></i>
+        </div>
       </div>
+      
+      
     </div>
 
     <section class="jumbotron text-center">
@@ -32,7 +44,8 @@ crossorigin="anonymous">
         <h1 class="jumbotron-heading">Sticky Notes</h1>
         <p class="lead text-muted">Simply add a note and save rainforests!</p>
         <p>
-          <a href="#" class="btn btn-primary">Add a note</a>
+          <a href="#" id="addNote" class="btn btn-primary">Add a note</a>
+          <a href="#" id="removeNotes" class="btn btn-primary">Delete all notes</a>
         </p>
       </div>
     </section>
@@ -41,61 +54,7 @@ crossorigin="anonymous">
       <div class="container">
 
         <div class="row">
-          <div class="note">
-            <div class="note-header">
-                <h5 class="modal-title">Sticky note 1.</h5>
-            </div>
-            <div class="note-body">
-                <p class="note-text" contenteditable="true">Lorem ipsum dolor sit amet, 
-consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna 
-aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip 
-ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse 
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
-sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            </div>
-            <div class="note-footer">
-                <button type="button" class="close" aria-label="Delete">
-                    <span aria-hidden="true" class="fa fa-trash-o text-danger"></span>
-                </button>            
-            </div>
-          </div>
-          <div class="note">
-            <div class="note-header">
-                <h5 class="modal-title">Sticky note 2.</h5>
-            </div>
-            <div class="note-body">
-                <p class="note-text" contenteditable="true">Lorem ipsum dolor sit amet, 
-consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna 
-aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip 
-ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse 
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
-sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            </div>
-            <div class="note-footer">
-                <button type="button" class="close" aria-label="Delete">
-                    <span aria-hidden="true" class="fa fa-trash-o text-danger"></span>
-                </button>            
-            </div>
-          </div>
-          <div class="note">
-            <div class="note-header">
-                <h5 class="modal-title">Sticky note 3.</h5>
-            </div>
-            <div class="note-body">
-                <p class="note-text" contenteditable="true">Lorem ipsum dolor sit amet, 
-consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna 
-aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip 
-ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse 
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
-sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            </div>
-            <div class="note-footer">
-                <button type="button" class="close" aria-label="Delete">
-                    <span aria-hidden="true" class="fa fa-trash-o text-danger"></span>
-                </button>            
-            </div>
-          </div>
-        </div>
+
 
       </div>
     </div>
@@ -110,26 +69,67 @@ sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     </footer>
     <script>
       (function () {
+        var noteCount = 1;
+                
+        function allowDrop(ev) {
+          ev.preventDefault();
+          ev.dataTransfer.dropEffect= 'move';
+          ev.target.style.outline = "1px solid white";
+        }
         
-        //var xhttp = new XMLHttpRequest();
-        //xhttp.open("GET", "weather.json", true);
-        //xhttp.onload = function() {
-        //  console.log(this.responseText);
-        //  //document.getElementById("weather").innerHTML = this.responseText;
-        //  let myObj = JSON.parse(this.responseText);
-        //  //console.log(myObj);
-        //  document.getElementById("weather").innerHTML = '<h1>' + myObj.currentWeather.temperature + '</h1>' + '<p>' + myObj.currentWeather.text + '</p>' + '<h2 style="text-transform:uppercase; font-size:12px;">' + myObj.currentWeather.location + '</h2>';
-        //}
-      
-        //xhttp.send()
+        function stopAllowDrop(ev) {
+          ev.target.style.outline = "none";
+        }
         
-        var noteCount = 3;
+        function drag(ev) {
+          ev.dataTransfer.setData("text", ev.target.dataset.id);
+          ev.dataTransfer.setData("note", ev.target.innerText);
+          ev.dataTransfer.setData("header", ev.target.offsetParent.children[0].children[0].innerText);
+        }
         
+        function drop(ev) {
+          var id = event.dataTransfer.getData("text");
+          ev.preventDefault();
+          ev.dataTransfer.dropEffect= 'move';
+          deleteNote(id);
+        }
+
+        function updateNote(event) {
+          var id = event.target.offsetParent.dataset.id;
+          if (parseInt(id) > 1){
+            var noteColor = event.target.offsetParent.style.backgroundColor;
+            var header = event.target.offsetParent.children[0].children[0].innerText;
+            var note = event.target.offsetParent.children[1].children[0].innerText;
+            let oReq = new XMLHttpRequest();
+            oReq.open("PUT", "/api/notes/"+id);
+            oReq.setRequestHeader("Content-Type","application/json");
+            oReq.onload = function() {}
+          let noteObject = {note: note, header:header, id:id, color:noteColor};
+          let payload = JSON.stringify(noteObject);
+          oReq.send(payload);
+          } else {
+            saveNote(event);
+          }
+        }
+
         function Note(noteText){
           this.note = noteText;
         }
         
-        function addNote() {
+        function selectElementContents(el) {
+          var range = document.createRange();
+          range.selectNodeContents(el);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+        
+        function getRandomColor() {
+          var color = 'rgba(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',.3' + ')';
+          return color;
+        }	
+        
+        function addNote(n) {        
           noteCount++;
           var newNote = document.createElement('div');
           var newNoteHeader = document.createElement('div');
@@ -137,52 +137,137 @@ sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
           var newNoteFooter = document.createElement('div');
           var newNoteHeading = document.createElement('h5');
           var newNoteText = document.createElement('p');
-          var newNoteHeadingContent = document.createTextNode("Stick Note " + noteCount + ".");
-          var newNoteContent = document.createTextNode("Type your note here...");
+          var newNoteHeadingContent = document.createTextNode(n.header || "Sticky Note " + noteCount + ".");
+          var newNoteContent = document.createTextNode(n.note || "Enter your note here:");
+          var newCloseBtn = document.createElement('button');
           newNote.className = 'note';
           newNoteHeader.className = 'note-header';
           newNoteBody.className = 'note-body';
           newNoteFooter.className = 'note-footer';
           newNoteHeading.className = 'modal-title';
           newNoteText.className = 'note-text';
+          newCloseBtn.className = 'close';
           newNoteText.setAttribute("contenteditable", "true");
+          newNoteHeading.setAttribute("contenteditable", "true");
           newNoteText.appendChild(newNoteContent);
           newNoteHeading.appendChild(newNoteHeadingContent);
           newNoteHeader.appendChild(newNoteHeading);
           newNoteBody.appendChild(newNoteText);
+          newCloseBtn.innerHTML = "&times;";
+          newNoteHeader.appendChild(newCloseBtn);
           newNote.appendChild(newNoteHeader);
           newNote.appendChild(newNoteBody);
           newNote.appendChild(newNoteFooter);
-          newNoteText.addEventListener('blur', function(event) {saveNote(event);});
+          newNote.dataset.id = n._id;
+          newNote.setAttribute("draggable", "true");
+          newNote.style.backgroundColor = n.color || getRandomColor();
+          newNote.style.color = "#000";
+          newNoteHeading.setAttribute("ondrop", "return false;");
+          newNoteText.setAttribute("ondrop", "return false;");
+          //newNoteText.setAttribute("onfocus", "selectElementContents();");
+          newNoteText.addEventListener('blur', function(event) {updateNote(event);});
+          newNoteHeading.addEventListener('blur', function(event) {updateNote(event);});
+          newCloseBtn.addEventListener('click', function(event) {deleteNote(event)});
+          newNote.addEventListener('dragstart', function(event) {drag(event)});
           document.querySelector('div .container .row').appendChild(newNote);
         }
         
-        let addNoteBtn = document.querySelector(".btn-primary")
-        addNoteBtn.addEventListener("click", function() {addNote()});
-          
-        let noteText = document.querySelectorAll(".note-text");
-        for (let i=0; i < noteText.length; i++) {
-          noteText[i].addEventListener('blur', function(event) {saveNote(event)})}
+        function newNote() {
+          addNote({note:"Type your note here...", id:123, header:"Sticky Note "+ noteCount});
+          let lastNote = document.querySelectorAll(".note-text");
+          let lastNoteText = lastNote[lastNote.length-1];
+          lastNoteText.focus();
+          selectElementContents(lastNoteText);
+        }
         
+        function deleteNote(e) {
+            if (typeof e === "string") {
+              e = e;
+            } else {
+              e = e.target.offsetParent.dataset.id;
+            }
+            let oReq = new XMLHttpRequest();
+            oReq.open("DELETE", "/api/notes/"+ e);
+            oReq.setRequestHeader("Content-Type","application/json");
+            oReq.onload = function() {
+            }
+            oReq.send();
+            loadNotes();
+          }
+        
+        function removeAllNotes() {       
+          let oReq = new XMLHttpRequest();
+          oReq.open("GET", "/api/notes");
+          oReq.setRequestHeader("Content-Type","application/json");
+          oReq.onload = function() {
+            document.querySelector(".row").innerHTML = "";
+            
+            let notesArray = JSON.parse(this.responseText);
+            noteCount = 1;
+            for (let i=0; i<notesArray.length; i++) {
+              deleteNote(notesArray[i]._id);
+            }
+          }
+          oReq.send();
+        }
         
         function saveNote(event) {
           let noteText = this.event.target.innerText;
-          console.log(noteText);
+          let noteColor = this.event.target.offsetParent.style.backgroundColor
+          let headerText = this.event.target.offsetParent.children[0].children[0].innerText;
+          let currentNote = this.event.target.offsetParent;
           let oReq = new XMLHttpRequest();
-          oReq.open("POST", "api/notes");
+          oReq.open("POST", "/api/notes");
           oReq.setRequestHeader("Content-Type","application/json");
           oReq.onload = function() {
-            // do stuff
+            let thisNote = JSON.parse(this.responseText);
+            currentNote.dataset.id = thisNote._id;
           }
-          let noteObject = {note: noteText};
+          let noteObject = {note: noteText, header:headerText, color:noteColor};
           let payload = JSON.stringify(noteObject);
           oReq.send(payload);
         }
         
+        function loadNotes() {       
+          let oReq = new XMLHttpRequest();
+          oReq.open("GET", "/api/notes");
+          oReq.setRequestHeader("Content-Type","application/json");
+          oReq.onload = function() {
+            document.querySelector(".row").innerHTML = "";
+            
+            let notesArray = JSON.parse(this.responseText);
+            noteCount = 1;
+            for (let i=0; i<notesArray.length; i++) {
+              addNote(notesArray[i]);
+            }
+          }
+          oReq.send();
+        }
         
+        let addNoteBtn = document.querySelector("#addNote")
+        addNoteBtn.addEventListener("click", function() {newNote()});
+
+        let noteText = document.querySelectorAll(".note-text");
+        for (let i=0; i < noteText.length; i++) {
+          noteText[i].addEventListener('blur', function(event) {saveNote(event)})}
+        
+        let noteDelete = document.querySelectorAll(".close");
+        for (let i=0; i < noteDelete.length; i++) {
+          noteDelete[i].addEventListener('click', function(event) {console.log("delete")})
+        }
+
+        document.getElementById('trash').addEventListener("drop", function(){ drop(event) });
+        document.getElementById('trash').addEventListener("dragover", function(){ allowDrop(event) });
+        document.getElementById('trash').addEventListener("dragleave", function(){ stopAllowDrop(event) });
+        document.getElementById('plusAdd').addEventListener("click", function(event){newNote() });
+        document.getElementById('removeNotes').addEventListener("click", function(event){removeAllNotes() });
+        
+        loadNotes();
         
       })();
     </script>
   </body>
 </html>
+
+
 
