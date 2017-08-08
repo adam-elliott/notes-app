@@ -1,14 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "ae-notes-app",
-  "description": "A Node.js RESTful api and static file server app using Express 4 for making notes.",
-  "repository": "https://github.com/adam-elliott/notes-app",
-  "logo": 
-"https://rawgit.com/kilavagora/node-js-demo/master/static/JavaScript.svg",
-  "keywords": ["node", "express", "static"]
-}
-
-=======
   "name": "notes-app",
   "description": "A simple sticky note app",
   "repository": "https://github.com/kilavagora/notes-app",
@@ -20,4 +10,3 @@
     "as": "MONGO"
   }]
 }
->>>>>>> a6f9b880a487ae51ed4676d7ef5815c106a874ed
