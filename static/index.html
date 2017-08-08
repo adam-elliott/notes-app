@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, shrink-to-fit=no">
+
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -22,18 +23,31 @@ crossorigin="anonymous">
     <script src="https://use.fontawesome.com/6b79c34139.js"></script>
     <style>
       .close{position:absolute;top:15px;right:15px;}
+      /**{-webkit-user-modify:read-write;}*/
+      .btn, #plusAdd {cursor:pointer;}
+      #trash, .note {cursor: move;}
+      #plusAdd:hover {opacity:1 !important;}
+      #plusAdd, #trash {float:right;}
+      .navbar-brand {padding-top: .85rem;}
+      
+      @media screen and (max-width: 640px) {
+      .note {width: calc(100% - 2rem);}
+        
+      .jumbotron{display:none}
+      }
+      
     </style>
   </head>
 
   <body>
-    <div class="navbar navbar-inverse bg-inverse">
-      <div class="container d-flex ">
+    <div class="navbar navbar-inverse bg-inverse" style="vertical-align: center;">
+      <div class="container navbar-text">
         
         <a href="#" class="navbar-brand">Sticky Notes</a>
-        <div class="navbar-right" style="position:absolute; right:0;">
-        <i  id="plusAdd" style="padding:10px; opacity:.6; color:white" class="fa fa-plus right" aria-hidden="true" class="fa fa-trash fa-1x"></i>
-      <i id="trash" style="padding:10px; opacity:.6; color:white" class="fa fa-trash fa-1x right" aria-hidden="true"></i>
-        </div>
+      <i  id="trash" style="padding:20px; opacity:.6; color:white" class="fa fa-trash fa-1x right" aria-hidden="true"></i>  
+        <i  id="plusAdd" style="padding:20px; opacity:.6; color:white" class="fa fa-plus right" aria-hidden="true" class="fa fa-trash fa-1x"></i>
+      
+        
       </div>
       
       
@@ -75,10 +89,15 @@ crossorigin="anonymous">
           ev.preventDefault();
           ev.dataTransfer.dropEffect= 'move';
           ev.target.style.outline = "1px solid white";
+          ev.target.style.padding = "20px 30px 20px 30px";
+          ev.target.style.transition = ".333s ease all";
+          ev.target.style.opacity = "1";
         }
         
         function stopAllowDrop(ev) {
           ev.target.style.outline = "none";
+          ev.target.style.padding = "20px";
+          ev.target.style.opacity = ".6";
         }
         
         function drag(ev) {
@@ -88,6 +107,9 @@ crossorigin="anonymous">
         }
         
         function drop(ev) {
+          ev.target.style.outline = "none";
+          ev.target.style.padding = "20px";
+          ev.target.style.opacity = ".6";
           var id = event.dataTransfer.getData("text");
           ev.preventDefault();
           ev.dataTransfer.dropEffect= 'move';
@@ -107,6 +129,7 @@ crossorigin="anonymous">
           let noteObject = {note: note, header:header, id:id, color:noteColor};
           let payload = JSON.stringify(noteObject);
           oReq.send(payload);
+          document.activeElement.blur();
           } else {
             saveNote(event);
           }
@@ -194,19 +217,21 @@ crossorigin="anonymous">
             oReq.send();
             loadNotes();
           }
-        
+          
         function removeAllNotes() {       
           let oReq = new XMLHttpRequest();
           oReq.open("GET", "/api/notes");
           oReq.setRequestHeader("Content-Type","application/json");
           oReq.onload = function() {
+            let yesSir = confirm("Are you sure?");
+            if (yesSir === true) {
             document.querySelector(".row").innerHTML = "";
-            
             let notesArray = JSON.parse(this.responseText);
             noteCount = 1;
             for (let i=0; i<notesArray.length; i++) {
-              deleteNote(notesArray[i]._id);
+              deleteNote(notesArray[i]._id); 
             }
+            } else {}
           }
           oReq.send();
         }
@@ -226,6 +251,7 @@ crossorigin="anonymous">
           let noteObject = {note: noteText, header:headerText, color:noteColor};
           let payload = JSON.stringify(noteObject);
           oReq.send(payload);
+          document.activeElement.blur();
         }
         
         function loadNotes() {       
@@ -263,7 +289,9 @@ crossorigin="anonymous">
         document.getElementById('removeNotes').addEventListener("click", function(event){removeAllNotes() });
         
         loadNotes();
-        
+        setInterval(function(){
+          if (document.activeElement === document.querySelector('body')) {loadNotes()}
+          }, 5000);
       })();
     </script>
   </body>
